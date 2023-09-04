@@ -1,0 +1,33 @@
+{
+  "authors": [
+    {
+      "name": "Vadanx",
+      "email": "andrew@vadanx.dev",
+      "url": "https://vadanx.dev",
+      "discord": "vadanx",
+      "github": "vadanx"
+    }
+  ],
+  "compatibility": {
+    "minimum": "11",
+    "verified": "11",
+    "maximum": "11"
+  },
+  "description": "Vadanx's Common Library is a Foundry VTT module for providing shared functionality to other modules.",
+  "download": "#{DOWNLOAD}#",
+  "esmodules": [
+    "common-library.js"
+  ],
+  "id": "vadanx-common-library",
+  "library": true,
+  "license": "LICENSE",
+  "manifest": "#{MANIFEST}#",
+  "readme": "README.md",
+  "relationships": {
+    "requires": []
+  },
+  "socket": true,
+  "title": "Vadanx's Common Library",
+  "url": "#{URL}#",
+  "version": "#{VERSION}#"
+}
