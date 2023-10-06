@@ -105,17 +105,45 @@ class Music {
     }
   }
 
+  preloadPlaylists (playlists) {
+    if (playlists != null) {
+      playlists.forEach(
+        p => {
+          this.log.info('Preloading playlist ' + p.name)
+          game.playlists.getName(p.name).playbackOrder.forEach(
+            s => {
+              const path = game.playlists.getName(p.name).sounds.get(s).path
+              if (path) {
+                game.audio.preload(path)
+              }
+            }
+          )
+        }
+      )
+    }
+  }
+
   startPlaylists (playlists) {
     this.log.info('Starting playlists ' + playlists)
     if (playlists != null) {
-      playlists.forEach(p => game.playlists.getName(p.name).playAll())
+      playlists.forEach(
+        p => {
+          this.log.info('Starting playlist ' + p.name)
+          game.playlists.getName(p.name).playAll()
+        }
+      )
     }
   }
 
   stopPlaylists (playlists) {
     this.log.info('Stopping playlists ' + playlists)
     if (playlists != null) {
-      playlists.forEach(p => game.playlists.getName(p.name).stopAll())
+      playlists.forEach(
+        p => {
+          this.log.info('Stopping playlist ' + p.name)
+          game.playlists.getName(p.name).stopAll()
+        }
+      )
     }
   }
 
