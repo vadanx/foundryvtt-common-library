@@ -1,5 +1,5 @@
 /*
-global game, Hooks, Playlist, ui
+global game, Hooks, Object, Playlist, ui
 */
 
 const MODULE = {
@@ -85,24 +85,34 @@ class Music {
   constructor (id) {
     this.id = id
     this.log = new Log(this.id)
+    this.soundsPlaying = new Map()
   }
 
   getPlaylists (playlistName) {
-    let playlists = null
-    switch (playlistName) {
-      case 'current':
-        playlists = game.playlists.playing
-        break
-      default:
-        playlists = game.playlists.getName(playlistName)
-        break
-    }
-    this.log.info('Getting playlists ' + playlistName)
-    if (playlists === undefined) {
-      return playlists
+    this.log.info(`Getting playlists ${playlistName}`)
+    const playlists = []
+    if (playlistName) {
+      playlists.push(game.playlists.getName(playlistName))
     } else {
-      return [playlists].flat(Infinity)
+      game.playlists.playing.forEach(
+        p => {
+          playlists.push(game.playlists.getName(p.name))
+        }
+      )
     }
+    playlists.forEach(
+      p => {
+        this.soundsPlaying.set(p._id, [])
+        p.sounds.forEach(
+          s => {
+            if (s.playing) {
+              this.soundsPlaying.get(p._id).push(s._id)
+            }
+          }
+        )
+      }
+    )
+    return playlists
   }
 
   preloadPlaylists (playlists) {
@@ -124,12 +134,23 @@ class Music {
   }
 
   startPlaylists (playlists) {
-    this.log.info('Starting playlists ' + playlists)
+    let playAll = true
     if (playlists != null) {
       playlists.forEach(
         p => {
-          this.log.info('Starting playlist ' + p.name)
-          game.playlists.getName(p.name).playAll()
+          p.sounds.forEach(
+            s => {
+              if (this.soundsPlaying.get(p._id)?.includes(s._id)) {
+                playAll = false
+                this.log.info(`Playing sound "${s.name}" in playlist "${p.name}"`)
+                p.playSound(s)
+              }
+            }
+          )
+          if (playAll) {
+            this.log.info(`Playing sound "all" in playlist "${p.name}"`)
+            p.playAll()
+          }
         }
       )
     }
